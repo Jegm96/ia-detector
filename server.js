@@ -6,9 +6,7 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
-
-// PUERTO OBLIGATORIO PARA RENDER
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Tu Secret Key V3 de Hive
 const HIVE_SECRET_KEY = "naFG1qcnkPDdyaaexAGvjA==";
@@ -24,6 +22,7 @@ app.use(express.static("public"));
 app.post("/api/analyze", upload.single("imageFile"), async (req, res) => {
   const { mode, text, imageUrl } = req.body;
 
+  // Preparar contenido según el modo
   let content = [];
 
   try {
@@ -35,10 +34,10 @@ app.post("/api/analyze", upload.single("imageFile"), async (req, res) => {
         type: "text",
         text: `Analiza este texto y responde solo con la probabilidad de que haya sido generado por IA (0 a 100): "${text}"`
       });
-
     } else if (mode === "image") {
       let imageDataUrl = null;
 
+      // Imagen subida
       if (req.file) {
         const mime = req.file.mimetype;
         const base64 = req.file.buffer.toString("base64");
@@ -46,14 +45,13 @@ app.post("/api/analyze", upload.single("imageFile"), async (req, res) => {
       } else if (imageUrl && imageUrl.trim() !== "") {
         imageDataUrl = imageUrl.trim();
       } else {
-        return res.status(400).json({ error: "Debe enviar una URL o subir una imagen" });
+        return res.status(400).json({ error: "Debe enviar una URL de imagen o subir un archivo" });
       }
 
       content.push({
         type: "image_url",
         image_url: { url: imageDataUrl }
       });
-
     } else {
       return res.status(400).json({ error: "Modo inválido" });
     }
@@ -76,7 +74,8 @@ app.post("/api/analyze", upload.single("imageFile"), async (req, res) => {
     const data = await response.json();
     console.log("Respuesta Hive:", JSON.stringify(data, null, 2));
 
-    if (data?.choices?.[0]?.message) {
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      // Devolver solo el contenido
       res.json({ result: data.choices[0].message.content });
     } else {
       res.status(500).json({ error: "No se pudo obtener un resultado válido" });
@@ -88,7 +87,4 @@ app.post("/api/analyze", upload.single("imageFile"), async (req, res) => {
   }
 });
 
-// CONFIGURACIÓN OBLIGATORIA EN RENDER
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`Servidor escuchando en puerto ${PORT}`)
-);
+app.listen(PORT, () => console.log(`Servidor escuchando en http://localhost:${PORT}`));
