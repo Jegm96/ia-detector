@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>IA Detector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    body { background: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .container { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 700px; width: 100%; }
+    h1 { text-align: center; margin-bottom: 20px; color: #333; }
+    select, textarea, input, button { font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; margin-bottom: 15px; }
+    textarea { min-height: 180px; resize: vertical; }
+    select { cursor: pointer; }
+    button { background: #007bff; color: #fff; border: none; cursor: pointer; transition: 0.3s; }
+    button:hover { background: #0056b3; }
+    #result { margin-top: 15px; font-size: 16px; white-space: pre-wrap; }
+    .progress { margin-top: 10px; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; }
+    .progress-bar { height: 100%; width: 0%; background: #007bff; text-align: center; color: white; line-height: 20px; transition: width 0.5s ease-in-out; }
+    .info { font-size: 14px; margin-top: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    @media(max-width: 768px){ .container{ padding:20px; } textarea{ min-height: 140px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IA Detector</h1>
+
+    <form id="analyzeForm">
+      <select id="mode">
+        <option value="text">Detectar texto generado por IA</option>
+        <option value="image">Extraer texto de imagen</option>
+      </select>
+
+      <!-- Texto -->
+      <textarea id="text" placeholder="Escribe o pega tu texto aquí"></textarea>
+
+      <!-- Imagen -->
+      <div id="imageInputs" style="display:none;">
+        <input type="text" id="imageUrl" placeholder="URL de imagen">
+        <input type="file" id="imageFile" accept="image/*">
+      </div>
+
+      <button type="submit">Analizar</button>
+      <button type="button" id="clearBtn" style="background:#6c757d;margin-top:5px;">Limpiar</button>
+      <button type="button" id="downloadBtn" style="background:#28a745;margin-top:5px; display:none;">Descargar texto</button>
+    </form>
+
+    <div id="result"></div>
+    <div class="progress"><div class="progress-bar" id="progressBar">0%</div></div>
+
+    <div class="info">
+      <strong>Precisión aproximada:</strong>
+      <table>
+        <tr><th>Tipo de texto</th><th>Precisión aproximada</th></tr>
+        <tr><td>Texto claramente humano (libros, artículos)</td><td>70–90% correctamente detectado como humano</td></tr>
+        <tr><td>Texto generado por IA reciente (GPT-4, ChatGPT, etc.)</td><td>75–95% correctamente detectado como IA</td></tr>
+        <tr><td>Texto mezclado (humano + IA)</td><td>50–80% (variable según cuánto aporte IA)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
